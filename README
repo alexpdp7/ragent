@@ -14,3 +14,16 @@ Will start ragent listening at *:21488
 $ check_ragent http://host:21488/
 
 Will contact a ragent instance at http://host:21488/ and generate output/perfdata/return code following Nagios guidelines.
+
+BUILDING
+
+RPMs
+
+Dependencies:
+
+$ cargo install cargo-rpm
+$ dnf install rpm-build
+
+Build:
+
+$ cargo rpm build
