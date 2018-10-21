@@ -1,0 +1,16 @@
+ragent is my Rust learning project (so it's implementation sucks, PRs, issues and suggestions welcome).
+
+ragent is my own monitoring agent:
+
+* It works with Nagios (with check_ragent)
+* It is as simple and lightweight as possible
+
+USAGE
+
+$ ragent
+
+Will start ragent listening at *:21488
+
+$ check_ragent http://host:21488/
+
+Will contact a ragent instance at http://host:21488/ and generate output/perfdata/return code following Nagios guidelines.
