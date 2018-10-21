@@ -8,7 +8,7 @@ use std::fs;
 use nix::sys::statvfs::statvfs;
 
 pub fn get_filesystems() -> Vec<Filesystem> {
-	get_mount_points().iter().map(|x| filesystem_from_mount_point(x) ).collect::<Vec<Filesystem>>()
+	get_mount_points().iter().map(|x| filesystem_from_mount_point(x) ).flatten().collect::<Vec<Filesystem>>()
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,13 +28,15 @@ fn get_mount_points() -> Vec<String> {
 		.collect::<Vec<String>>()
 }
 
-fn filesystem_from_mount_point(mount_point: &String) -> Filesystem {
-	let stat = statvfs(mount_point.as_str()).unwrap();
-	Filesystem {
-		mount_point: mount_point.to_string(),
-		size_bytes: stat.block_size() * stat.blocks(),
-		available_bytes: stat.block_size() * stat.blocks_available(),
-		inodes: stat.files(),
-		available_inodes: stat.files_available(),
+fn filesystem_from_mount_point(mount_point: &String) -> Option<Filesystem> {
+	match statvfs(mount_point.as_str()) {
+		Ok(stat) => Some(Filesystem {
+			mount_point: mount_point.to_string(),
+			size_bytes: stat.block_size() * stat.blocks(),
+			available_bytes: stat.block_size() * stat.blocks_available(),
+			inodes: stat.files(),
+			available_inodes: stat.files_available(),
+		}),
+		Err(_) => None,
 	}
 }

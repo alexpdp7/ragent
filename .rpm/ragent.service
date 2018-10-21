@@ -1,0 +1,14 @@
+[Unit]
+Description=ragent agent
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ragent
+KillMode=process
+Restart=on-failure
+User=ragent
+Group=ragent
+
+[Install]
+WantedBy=multi-user.target
