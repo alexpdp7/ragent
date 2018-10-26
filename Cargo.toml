@@ -22,3 +22,11 @@ ragent = { path = "/usr/bin/ragent" }
 
 [package.metadata.rpm.files]
 "ragent.service" = { path = "/usr/lib/systemd/system/ragent.service" }
+
+[package.metadata.deb]
+assets = [
+    ["debian-assets/ragent.service", "lib/systemd/system/", "644"],
+    ["target/release/check_ragent", "usr/bin/", "755"],
+    ["target/release/ragent", "usr/bin/", "755"],
+]
+maintainer-scripts = "debian-maintainer-scripts"

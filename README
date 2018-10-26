@@ -5,6 +5,11 @@ ragent is my own monitoring agent:
 * It works with Nagios (with check_ragent)
 * It is as simple and lightweight as possible
 
+DISCLAIMER
+
+* I am a complete noob Rust
+* I have no idea what I'm doing about packaging. The rpm and deb are TERRIBLE
+
 USAGE
 
 $ ragent
@@ -17,13 +22,6 @@ Will contact a ragent instance at http://host:21488/ and generate output/perfdat
 
 BUILDING
 
-RPMs
-
-Dependencies:
-
-$ cargo install cargo-rpm
-$ dnf install rpm-build
-
-Build:
-
-$ cargo rpm build
+$ cd packages
+$ ./build_package debian_stretch
+$ ./build_package centos7
