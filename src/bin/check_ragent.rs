@@ -10,7 +10,7 @@ fn main() {
     match run() {
         Ok(n) => exit(n),
         Err(s) => {
-            println!("{}", s);
+            println!("RAGENT UNKNOWN: {}", s);
             exit(3)
         },
     }
