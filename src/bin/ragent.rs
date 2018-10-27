@@ -2,7 +2,7 @@ extern crate ragent;
 extern crate serde_json;
 extern crate hyper;
 
-use ragent::get_filesystems;
+use ragent::filesystems::get_filesystems;
 use hyper::{Body, Response, Server};
 use hyper::service::service_fn_ok;
 use hyper::rt::{self, Future};

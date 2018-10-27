@@ -1,7 +1,7 @@
 extern crate reqwest;
 extern crate ragent;
 
-use ragent::Filesystem;
+use ragent::filesystems::Filesystem;
 use std::env;
 use std::process::exit;
 use reqwest::Url;
