@@ -8,7 +8,7 @@ use reqwest::Url;
 
 fn main() {
     match run() {
-        Ok(n) => exit(n as i32),
+        Ok(n) => exit(n),
         Err(s) => {
             println!("{}", s);
             exit(3)
@@ -16,7 +16,7 @@ fn main() {
     }
 }
 
-fn run() -> Result<u8, String> {
+fn run() -> Result<i32, String> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() != 2 {
         return Err("Single parameter must be the URL".to_string());
@@ -34,7 +34,7 @@ fn run() -> Result<u8, String> {
         Err(e) => return Err(format!("Could not parse {}", e.to_string())),
     };
     print!("RAGENT OK |");
-    for filesystem in result.iter() {
+    for filesystem in &result {
         if filesystem.size_bytes != 0 {
             print!(" {}_available_bytes={}B;;;;", filesystem.mount_point, filesystem.available_bytes);
         }
@@ -42,7 +42,7 @@ fn run() -> Result<u8, String> {
             print!(" {}_available_inodes={};;;;", filesystem.mount_point, filesystem.available_inodes);
         }
     }
-    print!("\n");
+    println!();
 
     Ok(0)
 }

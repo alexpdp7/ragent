@@ -28,8 +28,8 @@ fn get_mount_points() -> Vec<String> {
 		.collect::<Vec<String>>()
 }
 
-fn filesystem_from_mount_point(mount_point: &String) -> Option<Filesystem> {
-	match statvfs(mount_point.as_str()) {
+fn filesystem_from_mount_point(mount_point: &str) -> Option<Filesystem> {
+	match statvfs(mount_point) {
 		Ok(stat) => Some(Filesystem {
 			mount_point: mount_point.to_string(),
 			size_bytes: (stat.block_size() * stat.blocks()) as u64,
