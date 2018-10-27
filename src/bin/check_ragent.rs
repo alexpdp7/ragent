@@ -4,6 +4,7 @@ extern crate ragent;
 use ragent::filesystems::Filesystem;
 use std::env;
 use std::process::exit;
+use std::error::Error;
 use reqwest::Url;
 
 fn main() {
@@ -16,23 +17,14 @@ fn main() {
     }
 }
 
-fn run() -> Result<i32, String> {
+fn run() -> Result<i32, Box<Error>> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() != 2 {
-        return Err("Single parameter must be the URL".to_string());
+        return Err(From::from("Single parameter must be the URL"));
     }
-    let url = match Url::parse(&args[1]) {
-        Ok(u) => u,
-        Err(_) => return Err(format!("Bad URL {}", &args[1])),
-    };
-    let mut response = match reqwest::get(url) {
-        Ok(r) => r,
-        Err(e) => return Err(format!("Error getting URL {}", e.to_string())),
-    };
-    let result: Vec<Filesystem> = match response.json::<Vec<Filesystem>>() {
-        Ok(r) => r,
-        Err(e) => return Err(format!("Could not parse {}", e.to_string())),
-    };
+    let url = Url::parse(&args[1])?;
+    let mut response = reqwest::get(url)?;
+    let result: Vec<Filesystem> = response.json::<Vec<Filesystem>>()?;
     print!("RAGENT OK |");
     for filesystem in &result {
         if filesystem.size_bytes != 0 {
