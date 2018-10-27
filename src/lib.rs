@@ -32,10 +32,10 @@ fn filesystem_from_mount_point(mount_point: &String) -> Option<Filesystem> {
 	match statvfs(mount_point.as_str()) {
 		Ok(stat) => Some(Filesystem {
 			mount_point: mount_point.to_string(),
-			size_bytes: stat.block_size() * stat.blocks(),
-			available_bytes: stat.block_size() * stat.blocks_available(),
-			inodes: stat.files(),
-			available_inodes: stat.files_available(),
+			size_bytes: (stat.block_size() * stat.blocks()) as u64,
+			available_bytes: (stat.block_size() * stat.blocks_available()) as u64,
+			inodes: stat.files() as u64,
+			available_inodes: stat.files_available() as u64,
 		}),
 		Err(_) => None,
 	}
