@@ -5,3 +5,4 @@ extern crate serde;
 extern crate serde_derive;
 
 pub mod filesystems;
+pub mod nagios;

@@ -2,6 +2,7 @@ extern crate reqwest;
 extern crate ragent;
 
 use ragent::filesystems::Filesystem;
+use ragent::nagios::NagiosStatus;
 use std::env;
 use std::process::exit;
 use std::error::Error;
@@ -9,15 +10,15 @@ use reqwest::Url;
 
 fn main() {
     match run() {
-        Ok(n) => exit(n),
+        Ok(n) => exit(n as i32),
         Err(s) => {
             println!("RAGENT UNKNOWN: {}", s);
-            exit(3)
+            exit(NagiosStatus::UNKNOWN as i32)
         },
     }
 }
 
-fn run() -> Result<i32, Box<Error>> {
+fn run() -> Result<NagiosStatus, Box<Error>> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() != 2 {
         return Err(From::from("Single parameter must be the URL"));
@@ -36,5 +37,5 @@ fn run() -> Result<i32, Box<Error>> {
     }
     println!();
 
-    Ok(0)
+    Ok(NagiosStatus::OK)
 }
