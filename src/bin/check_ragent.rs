@@ -10,25 +10,31 @@ use std::process::exit;
 use std::vec::Vec;
 
 fn main() {
-    match run() {
-        Ok(n) => exit(n as i32),
+    exit(match run() {
+        Ok(status) => status,
         Err(s) => {
             println!("RAGENT UNKNOWN: {}", s);
-            exit(NagiosStatus::UNKNOWN as i32)
+            NagiosStatus::UNKNOWN
         }
-    }
+    } as i32);
 }
 
-fn run() -> Result<NagiosStatus, Box<Error>> {
+fn get_url() -> Result<Url, Box<Error>> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() != 2 {
         return Err(From::from("Single parameter must be the URL"));
     }
-    let url = Url::parse(&args[1])?;
+    Ok(Url::parse(&args[1])?)
+}
+
+fn get_from_agent(url: Url) -> Result<Vec<Filesystem>, Box<Error>> {
     let mut response = reqwest::get(url)?;
-    let filesystems: Vec<Filesystem> = response.json::<Vec<Filesystem>>()?;
+    Ok(response.json::<Vec<Filesystem>>()?)
+}
+
+fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<HasNagiosStatus>> {
     let mut metrics: Vec<Box<HasNagiosStatus>> = Vec::new();
-    for filesystem in &filesystems {
+    for filesystem in filesystems.iter() {
         if filesystem.size_bytes != 0 {
             metrics.push(Box::new(NagiosMetric::<u64> {
                 label: format!("{}_available_bytes", filesystem.mount_point),
@@ -58,19 +64,29 @@ fn run() -> Result<NagiosStatus, Box<Error>> {
             }));
         }
     }
+    metrics
+}
 
-    let status = (&metrics)
-        .into_iter()
+fn make_nagios(metrics: &[Box<HasNagiosStatus>]) -> NagiosStatus {
+    let status = metrics
+        .iter()
         .map(|m| m.get_status())
         .fold(NagiosStatus::OK, ::std::cmp::max);
 
     print!("RAGENT {:?} |", status);
 
-    for metric in &metrics {
+    for metric in metrics.iter() {
         print!(" {}", metric);
     }
 
     println!();
 
-    Ok(status)
+    status
+}
+
+fn run() -> Result<NagiosStatus, Box<Error>> {
+    let url = get_url()?;
+    let filesystems = get_from_agent(url)?;
+    let metrics = get_metrics(&filesystems);
+    Ok(make_nagios(&metrics))
 }
