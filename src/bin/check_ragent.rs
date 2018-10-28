@@ -2,7 +2,7 @@ extern crate ragent;
 extern crate reqwest;
 
 use ragent::filesystems::Filesystem;
-use ragent::nagios::NagiosStatus;
+use ragent::nagios::{NagiosMetric, NagiosStatus, NagiosUOM};
 use reqwest::Url;
 use std::env;
 use std::error::Error;
@@ -29,16 +29,28 @@ fn run() -> Result<NagiosStatus, Box<Error>> {
     print!("RAGENT OK |");
     for filesystem in &result {
         if filesystem.size_bytes != 0 {
-            print!(
-                " {}_available_bytes={}B;;;;",
-                filesystem.mount_point, filesystem.available_bytes
-            );
+            let metric = NagiosMetric::<u64> {
+                label: format!("{}_available_bytes", filesystem.mount_point),
+                uom: NagiosUOM::Bytes,
+                value: filesystem.available_bytes,
+                warn: None,
+                crit: None,
+                min: Some(0),
+                max: Some(filesystem.size_bytes),
+            };
+            print!(" {}", metric);
         }
         if filesystem.inodes != 0 {
-            print!(
-                " {}_available_inodes={};;;;",
-                filesystem.mount_point, filesystem.available_inodes
-            );
+            let metric = NagiosMetric::<u64> {
+                label: format!("{}_available_inodes", filesystem.mount_point),
+                uom: NagiosUOM::NoUnit,
+                value: filesystem.available_inodes,
+                warn: None,
+                crit: None,
+                min: Some(0),
+                max: Some(filesystem.inodes),
+            };
+            print!(" {}", metric);
         }
     }
     println!();
