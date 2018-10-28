@@ -2,11 +2,12 @@ extern crate ragent;
 extern crate reqwest;
 
 use ragent::filesystems::Filesystem;
-use ragent::nagios::{NagiosMetric, NagiosStatus, NagiosUOM};
+use ragent::nagios::{HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
 use reqwest::Url;
 use std::env;
 use std::error::Error;
 use std::process::exit;
+use std::vec::Vec;
 
 fn main() {
     match run() {
@@ -25,35 +26,51 @@ fn run() -> Result<NagiosStatus, Box<Error>> {
     }
     let url = Url::parse(&args[1])?;
     let mut response = reqwest::get(url)?;
-    let result: Vec<Filesystem> = response.json::<Vec<Filesystem>>()?;
-    print!("RAGENT OK |");
-    for filesystem in &result {
+    let filesystems: Vec<Filesystem> = response.json::<Vec<Filesystem>>()?;
+    let mut metrics: Vec<Box<HasNagiosStatus>> = Vec::new();
+    for filesystem in &filesystems {
         if filesystem.size_bytes != 0 {
-            let metric = NagiosMetric::<u64> {
+            metrics.push(Box::new(NagiosMetric::<u64> {
                 label: format!("{}_available_bytes", filesystem.mount_point),
                 uom: NagiosUOM::Bytes,
                 value: filesystem.available_bytes,
-                warn: None,
-                crit: None,
+                warn: Some(::std::cmp::min(
+                    filesystem.size_bytes / 5,
+                    2 * 1024 * 1024 * 1024,
+                )),
+                crit: Some(::std::cmp::min(
+                    filesystem.size_bytes / 10,
+                    1024 * 1024 * 1024,
+                )),
                 min: Some(0),
                 max: Some(filesystem.size_bytes),
-            };
-            print!(" {}", metric);
+            }));
         }
         if filesystem.inodes != 0 {
-            let metric = NagiosMetric::<u64> {
+            metrics.push(Box::new(NagiosMetric::<u64> {
                 label: format!("{}_available_inodes", filesystem.mount_point),
                 uom: NagiosUOM::NoUnit,
                 value: filesystem.available_inodes,
-                warn: None,
-                crit: None,
+                warn: Some(filesystem.inodes / 5),
+                crit: Some(filesystem.inodes / 10),
                 min: Some(0),
                 max: Some(filesystem.inodes),
-            };
-            print!(" {}", metric);
+            }));
         }
     }
+
+    let status = (&metrics)
+        .into_iter()
+        .map(|m| m.get_status())
+        .fold(NagiosStatus::OK, ::std::cmp::max);
+
+    print!("RAGENT {:?} |", status);
+
+    for metric in &metrics {
+        print!(" {}", metric);
+    }
+
     println!();
 
-    Ok(NagiosStatus::OK)
+    Ok(status)
 }
