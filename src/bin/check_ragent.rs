@@ -1,12 +1,12 @@
-extern crate reqwest;
 extern crate ragent;
+extern crate reqwest;
 
 use ragent::filesystems::Filesystem;
 use ragent::nagios::NagiosStatus;
-use std::env;
-use std::process::exit;
-use std::error::Error;
 use reqwest::Url;
+use std::env;
+use std::error::Error;
+use std::process::exit;
 
 fn main() {
     match run() {
@@ -14,7 +14,7 @@ fn main() {
         Err(s) => {
             println!("RAGENT UNKNOWN: {}", s);
             exit(NagiosStatus::UNKNOWN as i32)
-        },
+        }
     }
 }
 
@@ -29,10 +29,16 @@ fn run() -> Result<NagiosStatus, Box<Error>> {
     print!("RAGENT OK |");
     for filesystem in &result {
         if filesystem.size_bytes != 0 {
-            print!(" {}_available_bytes={}B;;;;", filesystem.mount_point, filesystem.available_bytes);
+            print!(
+                " {}_available_bytes={}B;;;;",
+                filesystem.mount_point, filesystem.available_bytes
+            );
         }
         if filesystem.inodes != 0 {
-            print!(" {}_available_inodes={};;;;", filesystem.mount_point, filesystem.available_inodes);
+            print!(
+                " {}_available_inodes={};;;;",
+                filesystem.mount_point, filesystem.available_inodes
+            );
         }
     }
     println!();
