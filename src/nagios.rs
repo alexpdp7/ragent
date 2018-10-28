@@ -54,7 +54,7 @@ impl fmt::Display for NagiosUOM {
             NagiosUOM::NoUnit => "",
             NagiosUOM::Seconds => "s",
             NagiosUOM::Percentage => "%",
-            NagiosUOM::Bytes => "b",
+            NagiosUOM::Bytes => "B",
             NagiosUOM::Counter => "c",
         })
     }
