@@ -24,12 +24,12 @@ fn get_url() -> Result<Url, Box<Error>> {
     if args.len() != 2 {
         return Err(From::from("Single parameter must be the URL"));
     }
-    Ok(Url::parse(&args[1])?)
+    Ok(Url::parse(&args[1]).map_err(|e| format!("Invalid URL {}: {}", args[1], e))?)
 }
 
 fn get_from_agent(url: Url) -> Result<Vec<Filesystem>, Box<Error>> {
     let mut response = reqwest::get(url)?;
-    Ok(response.json::<Vec<Filesystem>>()?)
+    Ok(response.json::<Vec<Filesystem>>().map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
 }
 
 fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<HasNagiosStatus>> {
