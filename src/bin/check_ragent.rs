@@ -29,7 +29,9 @@ fn get_url() -> Result<Url, Box<Error>> {
 
 fn get_from_agent(url: Url) -> Result<Vec<Filesystem>, Box<Error>> {
     let mut response = reqwest::get(url)?;
-    Ok(response.json::<Vec<Filesystem>>().map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
+    Ok(response
+        .json::<Vec<Filesystem>>()
+        .map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
 }
 
 fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<HasNagiosStatus>> {
