@@ -3,6 +3,7 @@ extern crate reqwest;
 
 use ragent::filesystems::Filesystem;
 use ragent::nagios::{HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
+use ragent::systemd::Unit;
 use ragent::RagentInfo;
 use reqwest::Url;
 use std::env;
@@ -70,13 +71,34 @@ fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<HasNagiosStatus>> {
     metrics
 }
 
-fn make_nagios(metrics: &[Box<HasNagiosStatus>]) -> NagiosStatus {
-    let status = metrics
+fn make_nagios(metrics: &[Box<HasNagiosStatus>], units: &[Unit]) -> NagiosStatus {
+    let metrics_status = metrics
         .iter()
         .map(|m| m.get_status())
         .fold(NagiosStatus::OK, ::std::cmp::max);
 
-    print!("RAGENT {:?} |", status);
+    let failed_units: Vec<&Unit> = units
+        .iter()
+        .filter(|u| u.active_state == "failed")
+        .collect();
+    let unit_status = if failed_units.is_empty() {
+        NagiosStatus::OK
+    } else {
+        NagiosStatus::CRITICAL
+    };
+
+    let status = ::std::cmp::max(metrics_status, unit_status);
+
+    print!("RAGENT {:?}", status);
+
+    if !failed_units.is_empty() {
+        print!(
+            " FAILED UNITS {:?}",
+            failed_units.iter().map(|u| &u.id).collect::<Vec<&String>>()
+        );
+    }
+
+    print!(" |");
 
     for metric in metrics.iter() {
         print!(" {}", metric);
@@ -91,5 +113,5 @@ fn run() -> Result<NagiosStatus, Box<Error>> {
     let url = get_url()?;
     let ragent_info = get_from_agent(url)?;
     let metrics = get_metrics(&ragent_info.filesystems);
-    Ok(make_nagios(&metrics))
+    Ok(make_nagios(&metrics, &ragent_info.units))
 }
