@@ -5,14 +5,14 @@ extern crate serde_json;
 use hyper::rt::{self, Future};
 use hyper::service::service_fn_ok;
 use hyper::{Body, Response, Server};
-use ragent::filesystems::get_filesystems;
+use ragent::get_ragent_info;
 
 fn main() {
     let addr = ([0, 0, 0, 0], 21488).into();
     let new_service = || {
         service_fn_ok(|_| {
             Response::new(Body::from(
-                serde_json::to_string(&get_filesystems()).unwrap(),
+                serde_json::to_string(&get_ragent_info()).unwrap(),
             ))
         })
     };

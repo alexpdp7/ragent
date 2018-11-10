@@ -3,6 +3,7 @@ extern crate reqwest;
 
 use ragent::filesystems::Filesystem;
 use ragent::nagios::{HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
+use ragent::RagentInfo;
 use reqwest::Url;
 use std::env;
 use std::error::Error;
@@ -27,10 +28,10 @@ fn get_url() -> Result<Url, Box<Error>> {
     Ok(Url::parse(&args[1]).map_err(|e| format!("Invalid URL {}: {}", args[1], e))?)
 }
 
-fn get_from_agent(url: Url) -> Result<Vec<Filesystem>, Box<Error>> {
+fn get_from_agent(url: Url) -> Result<RagentInfo, Box<Error>> {
     let mut response = reqwest::get(url)?;
     Ok(response
-        .json::<Vec<Filesystem>>()
+        .json::<RagentInfo>()
         .map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
 }
 
@@ -88,7 +89,7 @@ fn make_nagios(metrics: &[Box<HasNagiosStatus>]) -> NagiosStatus {
 
 fn run() -> Result<NagiosStatus, Box<Error>> {
     let url = get_url()?;
-    let filesystems = get_from_agent(url)?;
-    let metrics = get_metrics(&filesystems);
+    let ragent_info = get_from_agent(url)?;
+    let metrics = get_metrics(&ragent_info.filesystems);
     Ok(make_nagios(&metrics))
 }
