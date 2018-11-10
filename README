@@ -7,7 +7,7 @@ ragent is my own monitoring agent:
 
 DISCLAIMER
 
-* I am a complete noob Rust
+* I am a complete noob on Rust
 * I have no idea what I'm doing about packaging. The rpm and deb are TERRIBLE
 
 USAGE
