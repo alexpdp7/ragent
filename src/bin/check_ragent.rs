@@ -1,5 +1,4 @@
-extern crate ragent;
-extern crate reqwest;
+use reqwest;
 
 use ragent::filesystems::Filesystem;
 use ragent::nagios::{HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
@@ -21,7 +20,7 @@ fn main() {
     } as i32);
 }
 
-fn get_url() -> Result<Url, Box<Error>> {
+fn get_url() -> Result<Url, Box<dyn Error>> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() != 2 {
         return Err(From::from("Single parameter must be the URL"));
@@ -29,15 +28,15 @@ fn get_url() -> Result<Url, Box<Error>> {
     Ok(Url::parse(&args[1]).map_err(|e| format!("Invalid URL {}: {}", args[1], e))?)
 }
 
-fn get_from_agent(url: Url) -> Result<RagentInfo, Box<Error>> {
+fn get_from_agent(url: Url) -> Result<RagentInfo, Box<dyn Error>> {
     let mut response = reqwest::get(url)?;
     Ok(response
         .json::<RagentInfo>()
         .map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
 }
 
-fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<HasNagiosStatus>> {
-    let mut metrics: Vec<Box<HasNagiosStatus>> = Vec::new();
+fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<dyn HasNagiosStatus>> {
+    let mut metrics: Vec<Box<dyn HasNagiosStatus>> = Vec::new();
     for filesystem in filesystems.iter() {
         if filesystem.size_bytes != 0 {
             metrics.push(Box::new(NagiosMetric::<u64> {
@@ -71,7 +70,7 @@ fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<HasNagiosStatus>> {
     metrics
 }
 
-fn make_nagios(metrics: &[Box<HasNagiosStatus>], units: &[Unit]) -> NagiosStatus {
+fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], units: &[Unit]) -> NagiosStatus {
     let metrics_status = metrics
         .iter()
         .map(|m| m.get_status())
@@ -109,7 +108,7 @@ fn make_nagios(metrics: &[Box<HasNagiosStatus>], units: &[Unit]) -> NagiosStatus
     status
 }
 
-fn run() -> Result<NagiosStatus, Box<Error>> {
+fn run() -> Result<NagiosStatus, Box<dyn Error>> {
     let url = get_url()?;
     let ragent_info = get_from_agent(url)?;
     let metrics = get_metrics(&ragent_info.filesystems);

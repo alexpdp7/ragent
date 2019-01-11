@@ -1,6 +1,4 @@
-extern crate hyper;
-extern crate ragent;
-extern crate serde_json;
+use serde_json;
 
 use hyper::rt::{self, Future};
 use hyper::service::service_fn_ok;

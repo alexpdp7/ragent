@@ -49,7 +49,7 @@ where
 }
 
 impl fmt::Display for NagiosMetric<u64> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
             "'{}'={}{};{};{};{};{}",
@@ -73,7 +73,7 @@ pub enum NagiosUOM {
 }
 
 impl fmt::Display for NagiosUOM {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
             NagiosUOM::NoUnit => "",
             NagiosUOM::Seconds => "s",
