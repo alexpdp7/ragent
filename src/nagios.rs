@@ -8,6 +8,10 @@ pub enum NagiosStatus {
     UNKNOWN,
 }
 
+pub fn get_worst_status(statuses: &[NagiosStatus]) -> NagiosStatus {
+    *statuses.iter().max().unwrap_or(&NagiosStatus::OK)
+}
+
 pub struct NagiosMetric<T: ::std::cmp::Ord> {
     pub label: String,
     pub uom: NagiosUOM,

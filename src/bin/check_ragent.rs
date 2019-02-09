@@ -1,7 +1,7 @@
 use reqwest;
 
 use ragent::filesystems::Filesystem;
-use ragent::nagios::{HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
+use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
 use ragent::systemd::Unit;
 use ragent::RagentInfo;
 use reqwest::Url;
@@ -70,23 +70,33 @@ fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<dyn HasNagiosStatus>> {
     metrics
 }
 
-fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], units: &[Unit]) -> NagiosStatus {
-    let metrics_status = metrics
-        .iter()
-        .map(|m| m.get_status())
-        .fold(NagiosStatus::OK, ::std::cmp::max);
+fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) -> NagiosStatus {
+    let metrics_status = get_worst_status(
+        &metrics
+            .iter()
+            .map(|m| m.get_status())
+            .collect::<Vec<NagiosStatus>>(),
+    );
 
-    let failed_units: Vec<&Unit> = units
+    let failed_units: Vec<&Unit> = ragent_info
+        .units
         .iter()
         .filter(|u| u.active_state == "failed")
         .collect();
+
     let unit_status = if failed_units.is_empty() {
         NagiosStatus::OK
     } else {
         NagiosStatus::CRITICAL
     };
 
-    let status = ::std::cmp::max(metrics_status, unit_status);
+    let reboot_status = if ragent_info.reboot.reboot_required {
+        NagiosStatus::WARNING
+    } else {
+        NagiosStatus::OK
+    };
+
+    let status = get_worst_status(&[metrics_status, unit_status, reboot_status]);
 
     print!("RAGENT {:?}", status);
 
@@ -95,6 +105,10 @@ fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], units: &[Unit]) -> NagiosSt
             " FAILED UNITS {:?}",
             failed_units.iter().map(|u| &u.id).collect::<Vec<&String>>()
         );
+    }
+
+    if ragent_info.reboot.reboot_required {
+        print!(" REBOOT REQUIRED");
     }
 
     print!(" |");
@@ -112,5 +126,5 @@ fn run() -> Result<NagiosStatus, Box<dyn Error>> {
     let url = get_url()?;
     let ragent_info = get_from_agent(url)?;
     let metrics = get_metrics(&ragent_info.filesystems);
-    Ok(make_nagios(&metrics, &ragent_info.units))
+    Ok(make_nagios(&metrics, ragent_info))
 }
