@@ -31,6 +31,7 @@ fn or_empty(v: Option<u64>) -> String {
 
 pub trait HasNagiosStatus: ::std::fmt::Display {
     fn get_status(&self) -> NagiosStatus;
+    fn get_display_status(&self) -> String;
 }
 
 impl<T: ::std::cmp::Ord> HasNagiosStatus for NagiosMetric<T>
@@ -49,6 +50,10 @@ where
             }
         }
         NagiosStatus::OK
+    }
+
+    fn get_display_status(&self) -> String {
+        format!("{} is {:?}", self.label, self.get_status())
     }
 }
 

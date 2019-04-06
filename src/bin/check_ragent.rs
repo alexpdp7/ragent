@@ -111,6 +111,12 @@ fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) ->
         print!(" REBOOT REQUIRED");
     }
 
+    for metric in metrics.iter() {
+        if metric.get_status() != NagiosStatus::OK {
+            print!(" {}", metric.get_display_status())
+        }
+    }
+
     print!(" |");
 
     for metric in metrics.iter() {
