@@ -12,7 +12,7 @@ serde_json = "1.0.32"
 serde = "1.0.90"
 serde_derive = "1.0.90"
 hyper = "0.12.16"
-reqwest = "0.9.13"
+reqwest = "0.9.15"
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
