@@ -9,10 +9,10 @@ edition = "2018"
 [dependencies]
 nix = "0.13.0"
 serde_json = "1.0.32"
-serde = "1.0.90"
-serde_derive = "1.0.90"
-hyper = "0.12.28"
-reqwest = "0.9.16"
+serde = "1.0.91"
+serde_derive = "1.0.91"
+hyper = "0.12.29"
+reqwest = "0.9.17"
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
