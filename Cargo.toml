@@ -11,7 +11,7 @@ nix = "0.14.1"
 serde_json = "1.0.32"
 serde = "1.0.93"
 serde_derive = "1.0.93"
-hyper = "0.12.30"
+hyper = "0.12.31"
 reqwest = "0.9.18"
 
 [package.metadata.rpm.cargo]
