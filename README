@@ -27,11 +27,6 @@ WHAT'S MONITORED
 * It verifies that no SystemD unit is in failed state
 * It verifies that no reboot is required (Ubuntu)
 
-BUILDING
+BUILDING PACKAGES
 
-$ cd packages
-$ ./build_package debian_stretch
-$ ./build_package centos7
-$ ./build_package debian_stretch_rpi3
-$ ./build_package ubuntu_1604
-$ ./build_package ubuntu_1804
+See README on packages/

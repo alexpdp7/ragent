@@ -1,3 +1,11 @@
 Crummy way to build distro packages using Docker
 
 $ ./build_package centos7
+
+You might want to update base images first:
+
+$ for image in $(docker images --format "{{.Repository}}:{{.Tag}}") ; do docker pull $image ; done
+
+Or build all images in parallel:
+
+$ parallel ./build_package -- centos7 debian_stretch debian_stretch_rpi3 ubuntu_1604 ubuntu_1804
