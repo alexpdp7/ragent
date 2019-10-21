@@ -12,7 +12,8 @@ pub fn get_worst_status(statuses: &[NagiosStatus]) -> NagiosStatus {
     *statuses.iter().max().unwrap_or(&NagiosStatus::OK)
 }
 
-pub struct NagiosMetric<T: ::std::cmp::Ord> {
+#[derive(Clone)]
+pub struct NagiosMetric<T: ::std::cmp::Ord + Clone> {
     pub label: String,
     pub uom: NagiosUOM,
     pub value: T,
@@ -22,7 +23,7 @@ pub struct NagiosMetric<T: ::std::cmp::Ord> {
     pub max: Option<T>,
 }
 
-fn or_empty(v: Option<u64>) -> String {
+fn or_empty<T: fmt::Display + Clone>(v: Option<T>) -> String {
     match v {
         Some(n) => n.to_string(),
         None => "".to_string(),
@@ -34,7 +35,7 @@ pub trait HasNagiosStatus: ::std::fmt::Display {
     fn get_display_status(&self) -> String;
 }
 
-impl<T: ::std::cmp::Ord> HasNagiosStatus for NagiosMetric<T>
+impl<T: ::std::cmp::Ord + Clone> HasNagiosStatus for NagiosMetric<T>
 where
     NagiosMetric<T>: ::std::fmt::Display,
 {
@@ -57,7 +58,10 @@ where
     }
 }
 
-impl fmt::Display for NagiosMetric<u64> {
+impl<T: fmt::Display + Clone> fmt::Display for NagiosMetric<T>
+where
+    T: std::cmp::Ord,
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
@@ -65,14 +69,15 @@ impl fmt::Display for NagiosMetric<u64> {
             self.label,
             self.value,
             self.uom,
-            or_empty(self.warn),
-            or_empty(self.crit),
-            or_empty(self.min),
-            or_empty(self.max)
+            or_empty(self.warn.clone()),
+            or_empty(self.crit.clone()),
+            or_empty(self.min.clone()),
+            or_empty(self.max.clone())
         )
     }
 }
 
+#[derive(Clone)]
 pub enum NagiosUOM {
     NoUnit,
     Seconds,
