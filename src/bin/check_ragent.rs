@@ -66,6 +66,15 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
             }));
         }
     }
+    metrics.push(Box::new(NagiosMetric::<usize> {
+        label: "entropy".to_string(),
+        uom: NagiosUOM::NoUnit,
+        value: ragent_info.entropy,
+        warn: Some(500),
+        crit: Some(250),
+        min: Some(0),
+        max: None,
+    }));
     metrics
 }
 

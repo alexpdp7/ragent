@@ -26,6 +26,7 @@ WHAT'S MONITORED
 * It verifies that no filesystem's free inodes are less than 20% free (warning) or less than 10% free (critical)
 * It verifies that no SystemD unit is in failed state
 * It verifies that no reboot is required (Ubuntu)
+* It verifies that entroy is over 250 (critical) or 500 (warning) 
 
 BUILDING PACKAGES
 
