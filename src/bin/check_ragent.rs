@@ -1,6 +1,5 @@
 use reqwest;
 
-use ragent::filesystems::Filesystem;
 use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
 use ragent::systemd::Unit;
 use ragent::RagentInfo;
@@ -35,9 +34,9 @@ fn get_from_agent(url: Url) -> Result<RagentInfo, Box<dyn Error>> {
         .map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
 }
 
-fn get_metrics(filesystems: &[Filesystem]) -> Vec<Box<dyn HasNagiosStatus>> {
+fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
     let mut metrics: Vec<Box<dyn HasNagiosStatus>> = Vec::new();
-    for filesystem in filesystems.iter() {
+    for filesystem in ragent_info.filesystems.iter() {
         if filesystem.size_bytes != 0 {
             metrics.push(Box::new(NagiosMetric::<u64> {
                 label: format!("{}_available_bytes", filesystem.mount_point),
@@ -131,6 +130,6 @@ fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) ->
 fn run() -> Result<NagiosStatus, Box<dyn Error>> {
     let url = get_url()?;
     let ragent_info = get_from_agent(url)?;
-    let metrics = get_metrics(&ragent_info.filesystems);
+    let metrics = get_metrics(&ragent_info);
     Ok(make_nagios(&metrics, ragent_info))
 }
