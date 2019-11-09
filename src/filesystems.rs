@@ -4,8 +4,7 @@ use std::fs;
 pub fn get_filesystems() -> Vec<Filesystem> {
     get_mount_points()
         .iter()
-        .map(|x| filesystem_from_mount_point(x))
-        .flatten()
+        .flat_map(|x| filesystem_from_mount_point(x))
         .collect::<Vec<Filesystem>>()
 }
 
