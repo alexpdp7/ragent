@@ -1,25 +1,30 @@
+use std::convert::Infallible;
+
 use serde_json;
 
-use hyper::rt::{self, Future};
-use hyper::service::service_fn_ok;
+use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Response, Server};
 use ragent::get_ragent_info;
 
-fn main() {
+#[tokio::main]
+pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let addr = ([0, 0, 0, 0], 21488).into();
-    let new_service = || {
-        service_fn_ok(|_| {
-            Response::new(Body::from(
-                serde_json::to_string(&get_ragent_info()).unwrap(),
-            ))
-        })
-    };
-
-    let server = Server::bind(&addr)
-        .serve(new_service)
-        .map_err(|e| eprintln!("server error: {}", e));
+    let new_service = make_service_fn(|_| {
+        async {
+            Ok::<_, Infallible>(service_fn(|_| {
+                async {
+                    Ok::<_, Infallible>(Response::new(Body::from(
+                        serde_json::to_string(&get_ragent_info()).unwrap(),
+                    )))
+                }
+            }))
+        }
+    });
+    let server = Server::bind(&addr).serve(new_service);
 
     println!("Listening on http://{}", addr);
 
-    rt::run(server);
+    server.await?;
+
+    Ok(())
 }
