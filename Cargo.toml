@@ -12,7 +12,7 @@ serde_json = "1.0.44"
 serde = "1.0.104"
 serde_derive = "1.0.104"
 hyper = "0.13.0"
-tokio = { version = "0.2.4", features = ["full"] }
+tokio = { version = "0.2.5", features = ["full"] }
 reqwest = "0.9.24"
 
 [package.metadata.rpm.cargo]
