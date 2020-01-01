@@ -9,3 +9,7 @@ $ for image in $(docker images --format "{{.Repository}}:{{.Tag}}") ; do docker 
 Or build all images in parallel:
 
 $ parallel ./build_package -- centos7 debian_stretch debian_stretch_rpi3 ubuntu_1604 ubuntu_1804
+
+NOTES:
+
+* The Debian Stretch package works on Buster with no issues
