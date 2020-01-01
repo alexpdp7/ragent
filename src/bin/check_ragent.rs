@@ -28,10 +28,10 @@ fn get_url() -> Result<Url, Box<dyn Error>> {
 }
 
 fn get_from_agent(url: Url) -> Result<RagentInfo, Box<dyn Error>> {
-    let mut response = reqwest::get(url)?;
+    let response = reqwest::blocking::get(url)?;
     Ok(response
         .json::<RagentInfo>()
-        .map_err(|e| format!("Could not parse JSON from {:?}: {1}", response, e))?)
+        .map_err(|e| format!("Could not parse JSON: {}", e))?)
 }
 
 fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
