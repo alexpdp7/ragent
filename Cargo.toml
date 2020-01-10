@@ -12,8 +12,8 @@ serde_json = "1.0.44"
 serde = "1.0.104"
 serde_derive = "1.0.104"
 hyper = "0.13.1"
-tokio = { version = "0.2.6", features = ["full"] }
-reqwest = { version = "0.10.0", features = ["blocking", "json"] }
+tokio = { version = "0.2.9", features = ["macros"] }
+reqwest = { version = "0.10.1", features = ["blocking", "json"] }
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
