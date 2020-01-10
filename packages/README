@@ -4,7 +4,7 @@ $ ./build_package centos7
 
 You might want to update base images first:
 
-$ for image in $(docker images --format "{{.Repository}}:{{.Tag}}") ; do docker pull $image ; done
+$ for image in $(grep FROM */Dockerfile | cut -d " " -f 2) ; do docker pull $image ; done
 
 Or build all images in parallel:
 
