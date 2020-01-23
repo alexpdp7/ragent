@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 nix = "0.16.1"
-serde_json = "1.0.44"
+serde_json = "1.0.45"
 serde = "1.0.104"
 serde_derive = "1.0.104"
 hyper = "0.13.1"
