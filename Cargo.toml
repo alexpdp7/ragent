@@ -11,7 +11,7 @@ nix = "0.16.1"
 serde_json = "1.0.45"
 serde = "1.0.104"
 serde_derive = "1.0.104"
-hyper = "0.13.1"
+hyper = "0.13.2"
 tokio = { version = "0.2.10", features = ["macros"] }
 reqwest = { version = "0.10.1", features = ["blocking", "json"] }
 
