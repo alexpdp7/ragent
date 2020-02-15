@@ -6,7 +6,7 @@ You might want to update base images first:
 
 $ for image in $(grep FROM */Dockerfile | cut -d " " -f 2) ; do docker pull $image ; done
 
-Or build all images in parallel:
+Or build all packages in parallel:
 
 $ parallel ./build_package -- centos7 debian_stretch debian_stretch_rpi3 ubuntu_1604 ubuntu_1804
 
