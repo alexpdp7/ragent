@@ -13,7 +13,7 @@ serde = "1.0.104"
 serde_derive = "1.0.104"
 hyper = "0.13.2"
 tokio = { version = "0.2.11", features = ["macros"] }
-reqwest = { version = "0.10.2", features = ["blocking", "json"] }
+reqwest = { version = "0.10.3", features = ["blocking", "json"] }
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
