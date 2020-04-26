@@ -1,7 +1,5 @@
 use std::convert::Infallible;
 
-use serde_json;
-
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Response, Server};
 use ragent::get_ragent_info;

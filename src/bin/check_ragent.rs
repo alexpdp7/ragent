@@ -1,5 +1,3 @@
-use reqwest;
-
 use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
 use ragent::systemd::Unit;
 use ragent::RagentInfo;
