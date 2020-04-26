@@ -6,4 +6,4 @@ TARGET=$1
 
 ( cd $TARGET ; docker build --no-cache -t rust_$TARGET . )
 mkdir -p build/$TARGET
-docker run -it --rm -v $(pwd)/../:/root/src/:z -v $(pwd)/build/$TARGET:/root/src/target:z rust_$TARGET
+docker run -i --rm -v $(pwd)/../:/root/src/:z -v $(pwd)/build/$TARGET:/root/src/target:z rust_$TARGET
