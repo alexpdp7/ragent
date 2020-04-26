@@ -1,0 +1,83 @@
+on: [push]
+
+name: Continuous integration
+
+jobs:
+  check:
+    name: cargo check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+  fmt:
+    name: cargo fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: rustup component add rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  clippy:
+    name: cargo clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: rustup component add clippy
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+  build-packages:
+    needs: [check, fmt, clippy]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - centos7
+          - debian_stretch
+          - debian_stretch_rpi3
+          - ubuntu_1604
+          - ubuntu_1804
+          - centos8
+        include:
+          - package: centos7
+            artifact: packages/build/centos7/release/rpmbuild/RPMS/x86_64/ragent-0.1.0-1.x86_64.rpm
+          - package: debian_stretch
+            artifact: packages/build/debian_stretch/debian/ragent_0.1.0_amd64.deb
+          - package: debian_stretch_rpi3
+            artifact: packages/build/debian_stretch_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_0.1.0_armhf.deb
+          - package: ubuntu_1604
+            artifact: packages/build/ubuntu_1604/debian/ragent_0.1.0_amd64.deb
+          - package: ubuntu_1804
+            artifact: packages/build/ubuntu_1804/debian/ragent_0.1.0_amd64.deb
+          - package: centos8
+            artifact: packages/build/centos8/release/rpmbuild/RPMS/x86_64/ragent-0.1.0-1.x86_64.rpm
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd packages/ ; ./build_package ${{ matrix.package }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.package }}
+          path: ${{ matrix.artifact }}
