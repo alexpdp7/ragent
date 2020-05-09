@@ -2,10 +2,16 @@ use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStat
 use ragent::systemd::Unit;
 use ragent::RagentInfo;
 use reqwest::Url;
-use std::env;
 use std::error::Error;
 use std::process::exit;
 use std::vec::Vec;
+use structopt::StructOpt;
+
+#[derive(StructOpt, Debug)]
+#[structopt(about = "Nagios check for ragent")]
+struct Args {
+    url: Url,
+}
 
 fn main() {
     exit(match run() {
@@ -15,14 +21,6 @@ fn main() {
             NagiosStatus::UNKNOWN
         }
     } as i32);
-}
-
-fn get_url() -> Result<Url, Box<dyn Error>> {
-    let args = env::args().collect::<Vec<String>>();
-    if args.len() != 2 {
-        return Err(From::from("Single parameter must be the URL"));
-    }
-    Ok(Url::parse(&args[1]).map_err(|e| format!("Invalid URL {}: {}", args[1], e))?)
 }
 
 fn get_from_agent(url: Url) -> Result<RagentInfo, Box<dyn Error>> {
@@ -135,8 +133,8 @@ fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) ->
 }
 
 fn run() -> Result<NagiosStatus, Box<dyn Error>> {
-    let url = get_url()?;
-    let ragent_info = get_from_agent(url)?;
+    let args = Args::from_args();
+    let ragent_info = get_from_agent(args.url)?;
     let metrics = get_metrics(&ragent_info);
     Ok(make_nagios(&metrics, ragent_info))
 }
