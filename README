@@ -24,7 +24,7 @@ WHAT'S MONITORED
 
 * It verifies that no filesystem's free space is less than 2 GB or 20% free (warning) or less than 1 GB/10% (critical)
 * It verifies that no filesystem's free inodes are less than 20% free (warning) or less than 10% free (critical)
-* It verifies that no SystemD unit is in failed state
+* It verifies that no SystemD unit is in failed state (critical, or use --warning-units to define units which will only generate warnings)
 * It verifies that no reboot is required (Ubuntu)
 * It verifies that entropy is over 250 (critical) or 500 (warning) 
 

@@ -11,6 +11,8 @@ use structopt::StructOpt;
 #[structopt(about = "Nagios check for ragent")]
 struct Args {
     url: Url,
+    #[structopt(long)]
+    warning_units: Vec<String>,
 }
 
 fn main() {
@@ -74,7 +76,11 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
     metrics
 }
 
-fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) -> NagiosStatus {
+fn make_nagios(
+    metrics: &[Box<dyn HasNagiosStatus>],
+    ragent_info: RagentInfo,
+    warning_units: Vec<String>,
+) -> NagiosStatus {
     let metrics_status = get_worst_status(
         &metrics
             .iter()
@@ -82,16 +88,26 @@ fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) ->
             .collect::<Vec<NagiosStatus>>(),
     );
 
-    let failed_units: Vec<&Unit> = ragent_info
+    let failed_warning_units: Vec<&Unit> = ragent_info
         .units
         .iter()
         .filter(|u| u.active_state == "failed")
+        .filter(|u| warning_units.contains(&u.id))
         .collect();
 
-    let unit_status = if failed_units.is_empty() {
-        NagiosStatus::OK
-    } else {
+    let failed_critical_units: Vec<&Unit> = ragent_info
+        .units
+        .iter()
+        .filter(|u| u.active_state == "failed")
+        .filter(|u| !warning_units.contains(&u.id))
+        .collect();
+
+    let unit_status = if !failed_critical_units.is_empty() {
         NagiosStatus::CRITICAL
+    } else if !failed_warning_units.is_empty() {
+        NagiosStatus::WARNING
+    } else {
+        NagiosStatus::OK
     };
 
     let reboot_status = if ragent_info.reboot.reboot_required {
@@ -104,10 +120,23 @@ fn make_nagios(metrics: &[Box<dyn HasNagiosStatus>], ragent_info: RagentInfo) ->
 
     print!("RAGENT {:?}", status);
 
-    if !failed_units.is_empty() {
+    if !failed_warning_units.is_empty() {
         print!(
-            " FAILED UNITS {:?}",
-            failed_units.iter().map(|u| &u.id).collect::<Vec<&String>>()
+            " FAILED WARNING UNITS {:?}",
+            failed_warning_units
+                .iter()
+                .map(|u| &u.id)
+                .collect::<Vec<&String>>()
+        );
+    }
+
+    if !failed_critical_units.is_empty() {
+        print!(
+            " FAILED CRITICAL UNITS {:?}",
+            failed_critical_units
+                .iter()
+                .map(|u| &u.id)
+                .collect::<Vec<&String>>()
         );
     }
 
@@ -136,5 +165,5 @@ fn run() -> Result<NagiosStatus, Box<dyn Error>> {
     let args = Args::from_args();
     let ragent_info = get_from_agent(args.url)?;
     let metrics = get_metrics(&ragent_info);
-    Ok(make_nagios(&metrics, ragent_info))
+    Ok(make_nagios(&metrics, ragent_info, args.warning_units))
 }
