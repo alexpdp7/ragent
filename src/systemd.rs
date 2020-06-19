@@ -46,5 +46,28 @@ fn get_units_from_output(out: &str) -> Vec<Unit> {
 
 pub fn get_units() -> Vec<Unit> {
     let out = execute_command();
-    get_units_from_output(&out)
+    let units = get_units_from_output(&out);
+    // workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1847437
+    // and https://bugzilla.proxmox.com/show_bug.cgi?id=2807
+    if is_proxmox() {
+        units
+            .into_iter()
+            .filter(|u| !is_user_service(u))
+            .collect::<Vec<Unit>>()
+    } else {
+        units
+    }
+}
+
+fn is_proxmox() -> bool {
+    let stdout = Command::new("uname")
+        .arg("-r")
+        .output()
+        .expect("could not check if proxmox using uname")
+        .stdout;
+    String::from_utf8(stdout).unwrap().ends_with("pve\n")
+}
+
+fn is_user_service(unit: &Unit) -> bool {
+    unit.id.starts_with("user@") && unit.id.ends_with(".service")
 }
