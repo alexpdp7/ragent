@@ -49,7 +49,7 @@ pub fn get_units() -> Vec<Unit> {
     let units = get_units_from_output(&out);
     // workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1847437
     // and https://bugzilla.proxmox.com/show_bug.cgi?id=2807
-    if is_proxmox() {
+    if is_lxc() {
         units
             .into_iter()
             .filter(|u| !is_user_service(u))
@@ -59,13 +59,12 @@ pub fn get_units() -> Vec<Unit> {
     }
 }
 
-fn is_proxmox() -> bool {
-    let stdout = Command::new("uname")
-        .arg("-r")
+fn is_lxc() -> bool {
+    let stdout = Command::new("systemd-detect-virt")
         .output()
-        .expect("could not check if proxmox using uname")
+        .expect("could not check if proxmox using systemd-detect-virt")
         .stdout;
-    String::from_utf8(stdout).unwrap().ends_with("pve\n")
+    String::from_utf8(stdout).unwrap() == ("lxc\n")
 }
 
 fn is_user_service(unit: &Unit) -> bool {
