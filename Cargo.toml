@@ -14,7 +14,7 @@ serde_derive = "1.0.114"
 hyper = "0.13.7"
 tokio = { version = "0.2.22", features = ["macros"] }
 reqwest = { version = "0.10.7", features = ["blocking", "json"] }
-structopt = "0.3.15"
+structopt = "0.3.16"
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
