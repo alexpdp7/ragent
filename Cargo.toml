@@ -7,14 +7,14 @@ license = "Public Domain"
 edition = "2018"
 
 [dependencies]
-nix = "0.18.0"
-serde_json = "1.0.58"
+nix = "0.19.0"
+serde_json = "1.0.59"
 serde = "1.0.116"
 serde_derive = "1.0.116"
 hyper = "0.13.8"
 tokio = { version = "0.2.22", features = ["macros"] }
 reqwest = { version = "0.10.8", features = ["blocking", "json"] }
-structopt = "0.3.19"
+structopt = "0.3.20"
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
