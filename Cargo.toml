@@ -12,7 +12,7 @@ serde_json = "1.0.59"
 serde = "1.0.117"
 serde_derive = "1.0.117"
 hyper = "0.13.8"
-tokio = { version = "0.2.22", features = ["macros"] }
+tokio = { version = "0.3.1", features = ["macros"] }
 reqwest = { version = "0.10.8", features = ["blocking", "json"] }
 structopt = "0.3.20"
 
