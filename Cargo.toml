@@ -10,7 +10,7 @@ edition = "2018"
 nix = "0.19.1"
 serde_json = "1.0.60"
 serde = "1.0.118"
-serde_derive = "1.0.117"
+serde_derive = "1.0.118"
 hyper = "0.13.9"
 tokio = { version = "0.2.22", features = ["macros"] }
 reqwest = { version = "0.10.9", features = ["blocking", "json"] }
