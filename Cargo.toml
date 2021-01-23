@@ -9,8 +9,8 @@ edition = "2018"
 [dependencies]
 nix = "0.19.1"
 serde_json = "1.0.61"
-serde = "1.0.119"
-serde_derive = "1.0.119"
+serde = "1.0.120"
+serde_derive = "1.0.120"
 hyper = { version = "0.14.2", features = ["server", "http1", "runtime"] }
 tokio = { version = "1.0.2", features = ["macros", "rt-multi-thread"] }
 reqwest = { version = "0.11.0", features = ["blocking", "json"] }
