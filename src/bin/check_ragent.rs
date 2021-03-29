@@ -1,4 +1,4 @@
-use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUOM};
+use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUom};
 use ragent::systemd::Unit;
 use ragent::RagentInfo;
 use reqwest::Url;
@@ -20,7 +20,7 @@ fn main() {
         Ok(status) => status,
         Err(s) => {
             println!("RAGENT UNKNOWN: {}", s);
-            NagiosStatus::UNKNOWN
+            NagiosStatus::Unknown
         }
     } as i32);
 }
@@ -38,7 +38,7 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
         if filesystem.size_bytes != 0 {
             metrics.push(Box::new(NagiosMetric::<u64> {
                 label: format!("{}_available_bytes", filesystem.mount_point),
-                uom: NagiosUOM::Bytes,
+                uom: NagiosUom::Bytes,
                 value: filesystem.available_bytes,
                 warn: Some(::std::cmp::min(
                     filesystem.size_bytes / 5,
@@ -55,7 +55,7 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
         if filesystem.inodes != 0 {
             metrics.push(Box::new(NagiosMetric::<u64> {
                 label: format!("{}_available_inodes", filesystem.mount_point),
-                uom: NagiosUOM::NoUnit,
+                uom: NagiosUom::NoUnit,
                 value: filesystem.available_inodes,
                 warn: Some(filesystem.inodes / 5),
                 crit: Some(filesystem.inodes / 10),
@@ -66,7 +66,7 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
     }
     metrics.push(Box::new(NagiosMetric::<usize> {
         label: "entropy".to_string(),
-        uom: NagiosUOM::NoUnit,
+        uom: NagiosUom::NoUnit,
         value: ragent_info.entropy,
         warn: Some(500),
         crit: Some(250),
@@ -103,22 +103,22 @@ fn make_nagios(
         .collect();
 
     let unit_status = if !failed_critical_units.is_empty() {
-        NagiosStatus::CRITICAL
+        NagiosStatus::Critical
     } else if !failed_warning_units.is_empty() {
-        NagiosStatus::WARNING
+        NagiosStatus::Warning
     } else {
-        NagiosStatus::OK
+        NagiosStatus::Ok
     };
 
     let reboot_status = if ragent_info.reboot.reboot_required {
-        NagiosStatus::WARNING
+        NagiosStatus::Warning
     } else {
-        NagiosStatus::OK
+        NagiosStatus::Ok
     };
 
     let status = get_worst_status(&[metrics_status, unit_status, reboot_status]);
 
-    print!("RAGENT {:?}", status);
+    print!("RAGENT {}", status);
 
     if !failed_warning_units.is_empty() {
         print!(
@@ -145,7 +145,7 @@ fn make_nagios(
     }
 
     for metric in metrics.iter() {
-        if metric.get_status() != NagiosStatus::OK {
+        if metric.get_status() != NagiosStatus::Ok {
             print!(" {}", metric.get_display_status())
         }
     }

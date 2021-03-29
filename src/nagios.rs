@@ -2,20 +2,26 @@ use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum NagiosStatus {
-    OK,
-    WARNING,
-    CRITICAL,
-    UNKNOWN,
+    Ok,
+    Warning,
+    Critical,
+    Unknown,
+}
+
+impl fmt::Display for NagiosStatus {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", format!("{:?}", self).to_uppercase())
+    }
 }
 
 pub fn get_worst_status(statuses: &[NagiosStatus]) -> NagiosStatus {
-    *statuses.iter().max().unwrap_or(&NagiosStatus::OK)
+    *statuses.iter().max().unwrap_or(&NagiosStatus::Ok)
 }
 
 #[derive(Clone)]
 pub struct NagiosMetric<T: ::std::cmp::Ord + Clone> {
     pub label: String,
-    pub uom: NagiosUOM,
+    pub uom: NagiosUom,
     pub value: T,
     pub warn: Option<T>,
     pub crit: Option<T>,
@@ -42,15 +48,15 @@ where
     fn get_status(&self) -> NagiosStatus {
         if let Some(crit) = &self.crit {
             if self.value <= *crit {
-                return NagiosStatus::CRITICAL;
+                return NagiosStatus::Critical;
             }
         }
         if let Some(warn) = &self.warn {
             if self.value <= *warn {
-                return NagiosStatus::WARNING;
+                return NagiosStatus::Warning;
             }
         }
-        NagiosStatus::OK
+        NagiosStatus::Ok
     }
 
     fn get_display_status(&self) -> String {
@@ -78,7 +84,7 @@ where
 }
 
 #[derive(Clone)]
-pub enum NagiosUOM {
+pub enum NagiosUom {
     NoUnit,
     Seconds,
     Percentage,
@@ -86,14 +92,14 @@ pub enum NagiosUOM {
     Counter,
 }
 
-impl fmt::Display for NagiosUOM {
+impl fmt::Display for NagiosUom {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
-            NagiosUOM::NoUnit => "",
-            NagiosUOM::Seconds => "s",
-            NagiosUOM::Percentage => "%",
-            NagiosUOM::Bytes => "B",
-            NagiosUOM::Counter => "c",
+            NagiosUom::NoUnit => "",
+            NagiosUom::Seconds => "s",
+            NagiosUom::Percentage => "%",
+            NagiosUom::Bytes => "B",
+            NagiosUom::Counter => "c",
         })
     }
 }
