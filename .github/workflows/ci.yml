@@ -62,12 +62,24 @@ jobs:
         include:
           - package: centos7
             artifact_glob: packages/build/centos7/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
+            cloudsmith-distro: el
+            cloudsmith-version: 7
+            cloudsmith-format: rpm
           - package: centos8
             artifact_glob: packages/build/centos8/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
+            cloudsmith-distro: el
+            cloudsmith-version: 8
+            cloudsmith-format: rpm
           - package: debian_stretch
             artifact_glob: packages/build/debian_stretch/debian/ragent_*.deb
+            cloudsmith-distro: any-distro
+            cloudsmith-version: any-version
+            cloudsmith-format: deb
           - package: debian_stretch_rpi3
             artifact_glob: packages/build/debian_stretch_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_*.deb
+            cloudsmith-distro: any-distro
+            cloudsmith-version: any-version
+            cloudsmith-format: deb
     steps:
       - uses: actions/checkout@v2
       - run: cd packages/ ; ./build_package ${{ matrix.package }}
@@ -77,3 +89,17 @@ jobs:
         with:
           name: ${{ matrix.package }}
           path: ${{ env.artifact }}
+      - name: upload to cloudsmith
+        id: push
+        uses: cloudsmith-io/action@master
+        with:
+          api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+          command: 'push'
+          format: ${{ matrix.cloudsmith-format }}
+          owner: 'ragent'
+          repo: 'ragent'
+          distro: ${{ matrix.cloudsmith-distro }}
+          release: ${{ matrix.cloudsmith-version }}
+          republish: 'true'
+          file: ${{ env.artifact }}
+        if: ${{ !contains(env.artifact, 'alpha') }}
