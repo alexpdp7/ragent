@@ -30,4 +30,10 @@ WHAT'S MONITORED
 
 BUILDING PACKAGES
 
-See README on packages/
+See README on packages directory.
+
+Packages are available at:
+
+https://cloudsmith.io/~ragent/repos/ragent/setup/
+
+Packages are tested on EL7, EL8, Debian 9, Debian 10, Raspbian 9, and Ubuntu 20.04.
