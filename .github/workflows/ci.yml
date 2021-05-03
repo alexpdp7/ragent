@@ -85,6 +85,7 @@ jobs:
       - run: cd packages/ ; ./build_package ${{ matrix.package }}
       - run: |
             echo artifact=$(ls ${{ matrix.artifact_glob }}) >> $GITHUB_ENV
+            echo cargo_version=$(cargo read-manifest | jq .version -r) >> $GITHUB_ENV
       - uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.package }}
@@ -102,4 +103,4 @@ jobs:
           release: ${{ matrix.cloudsmith-version }}
           republish: 'true'
           file: ${{ env.artifact }}
-        if: ${{ !contains(env.artifact, 'alpha') }}
+        if: ${{ !contains(env.cargo_version, 'alpha') && github.ref == 'refs/heads/master' }}
