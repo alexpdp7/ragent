@@ -61,17 +61,19 @@ jobs:
           - debian_stretch_rpi3
         include:
           - package: centos7
-            artifact: packages/build/centos7/release/rpmbuild/RPMS/x86_64/ragent-0.1.0-1.x86_64.rpm
+            artifact_glob: packages/build/centos7/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
           - package: centos8
-            artifact: packages/build/centos8/release/rpmbuild/RPMS/x86_64/ragent-0.1.0-1.x86_64.rpm
+            artifact_glob: packages/build/centos8/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
           - package: debian_stretch
-            artifact: packages/build/debian_stretch/debian/ragent_0.1.0_amd64.deb
+            artifact_glob: packages/build/debian_stretch/debian/ragent_*.deb
           - package: debian_stretch_rpi3
-            artifact: packages/build/debian_stretch_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_0.1.0_armhf.deb
+            artifact_glob: packages/build/debian_stretch_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_*.deb
     steps:
       - uses: actions/checkout@v2
       - run: cd packages/ ; ./build_package ${{ matrix.package }}
+      - run: |
+            echo artifact=$(ls ${{ matrix.artifact_glob }}) >> $GITHUB_ENV
       - uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.package }}
-          path: ${{ matrix.artifact }}
+          path: ${{ env.artifact }}
