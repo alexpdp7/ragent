@@ -103,4 +103,4 @@ jobs:
           release: ${{ matrix.cloudsmith-version }}
           republish: 'true'
           file: ${{ env.artifact }}
-        if: ${{ !contains(env.cargo_version, 'alpha') && github.ref == 'refs/heads/master' }}
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
