@@ -20,6 +20,10 @@ $ check_ragent http://host:21488/
 
 Will contact a ragent instance at http://host:21488/ and generate output/perfdata/return code following Nagios guidelines.
 
+$ check_ragent
+
+Will check the local host without using a daemon.
+
 WHAT'S MONITORED
 
 * It verifies that no filesystem's free space is less than 2 GB or 20% free (warning) or less than 1 GB/10% (critical)

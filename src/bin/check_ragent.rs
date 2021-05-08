@@ -1,6 +1,6 @@
 use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUom};
 use ragent::systemd::Unit;
-use ragent::RagentInfo;
+use ragent::{get_ragent_info, RagentInfo};
 use reqwest::Url;
 use std::error::Error;
 use std::process::exit;
@@ -10,7 +10,8 @@ use structopt::StructOpt;
 #[derive(StructOpt, Debug)]
 #[structopt(about = "Nagios check for ragent")]
 struct Args {
-    url: Url,
+    /// If provided (like http://host:21488/), contacts a remote ragent daemon. Else check local host.
+    url: Option<Url>,
     #[structopt(long)]
     warning_units: Vec<String>,
 }
@@ -163,7 +164,10 @@ fn make_nagios(
 
 fn run() -> Result<NagiosStatus, Box<dyn Error>> {
     let args = Args::from_args();
-    let ragent_info = get_from_agent(args.url)?;
+    let ragent_info = match args.url {
+        Some(url) => get_from_agent(url)?,
+        None => get_ragent_info(),
+    };
     let metrics = get_metrics(&ragent_info);
     Ok(make_nagios(&metrics, ragent_info, args.warning_units))
 }
