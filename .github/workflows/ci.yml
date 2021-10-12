@@ -57,38 +57,50 @@ jobs:
         package:
           - centos7
           - centos8
+          - centos8:linux/arm64/v8
           - debian_stretch
           - debian_stretch_rpi3
         include:
           - package: centos7
+            artifact_name: centos7
             artifact_glob: packages/build/centos7/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
             cloudsmith-distro: el
             cloudsmith-version: 7
             cloudsmith-format: rpm
           - package: centos8
+            artifact_name: centos8
             artifact_glob: packages/build/centos8/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
             cloudsmith-distro: el
             cloudsmith-version: 8
             cloudsmith-format: rpm
+          - package: centos8:linux/arm64/v8
+            artifact_name: centos8_rpi4
+            artifact_glob: packages/build/centos8/release/rpmbuild/RPMS/aarch64/ragent-*.rpm
+            cloudsmith-distro: el
+            cloudsmith-version: 8
+            cloudsmith-format: rpm
           - package: debian_stretch
+            artifact_name: debian_stretch
             artifact_glob: packages/build/debian_stretch/debian/ragent_*.deb
             cloudsmith-distro: any-distro
             cloudsmith-version: any-version
             cloudsmith-format: deb
           - package: debian_stretch_rpi3
+            artifact_name: debian_stretch_rpi3
             artifact_glob: packages/build/debian_stretch_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_*.deb
             cloudsmith-distro: any-distro
             cloudsmith-version: any-version
             cloudsmith-format: deb
     steps:
       - uses: actions/checkout@v2
+      - run: sudo apt install -y qemu-user-static
       - run: cd packages/ ; ./build_package ${{ matrix.package }}
       - run: |
             echo artifact=$(ls ${{ matrix.artifact_glob }}) >> $GITHUB_ENV
             echo cargo_version=$(cargo read-manifest | jq .version -r) >> $GITHUB_ENV
       - uses: actions/upload-artifact@v1
         with:
-          name: ${{ matrix.package }}
+          name: ${{ matrix.artifact_name }}
           path: ${{ env.artifact }}
       - name: upload to cloudsmith
         id: push

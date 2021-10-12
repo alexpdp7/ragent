@@ -2,8 +2,16 @@
 
 set -ue
 
-TARGET=$1
+TARGET=$(echo $1 | cut -d ":" -f 1)
+ARCH=$(echo $1 | cut -d ":" -s -f 2)
 
-( cd $TARGET ; docker build --no-cache -t rust_$TARGET . )
+if [ -n "$ARCH" ] ; then
+    ARCH_OPTS="--platform $ARCH"
+else
+    ARCH_OPTS=""
+fi
+
+docker pull $(head -n 1 $TARGET/Dockerfile | cut -d " " -f 2) $ARCH_OPTS
+( cd $TARGET ; docker build $ARCH_OPTS --no-cache -t rust_$TARGET . )
 mkdir -p build/$TARGET
-docker run -i --rm -v $(pwd)/../:/root/src/:z -v $(pwd)/build/$TARGET:/root/src/target:z rust_$TARGET
+docker run -i --rm -v $(pwd)/../:/root/src/:z -v $(pwd)/build/$TARGET:/root/src/target:z $ARCH_OPTS rust_$TARGET
