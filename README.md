@@ -36,6 +36,7 @@ will check the local host without using a daemon.
 * No filesystem's free inodes are less than 20% free (warning) or less than 10% free (critical)
 * No SystemD unit is in failed state (critical, or use `--warning-units` to define units that will only generate warnings)
 * No reboot is required (EL7, EL8, Debian/Ubuntu)
+  (Note that Rocky Linux 8 on Raspberry Pi seems to be affected by [this bug that requires manual intervention after reboots](https://bugs.rockylinux.org/show_bug.cgi?id=177))
 * Entropy is over 250 (critical) or 500 (warning) 
 
 # BUILDING PACKAGES
