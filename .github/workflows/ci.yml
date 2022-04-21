@@ -55,27 +55,27 @@ jobs:
     strategy:
       matrix:
         package:
-          - centos7
-          - centos8
-          - centos8:linux/arm64/v8
+          - el7
+          - el8
+          - el8:linux/arm64/v8
           - debian_stretch
           - debian_stretch_rpi3
         include:
-          - package: centos7
-            artifact_name: centos7
-            artifact_glob: packages/build/centos7/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
+          - package: el7
+            artifact_name: el7
+            artifact_glob: packages/build/el7/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
             cloudsmith-distro: el
             cloudsmith-version: 7
             cloudsmith-format: rpm
-          - package: centos8
-            artifact_name: centos8
-            artifact_glob: packages/build/centos8/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
+          - package: el8
+            artifact_name: el8
+            artifact_glob: packages/build/el8/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
             cloudsmith-distro: el
             cloudsmith-version: 8
             cloudsmith-format: rpm
-          - package: centos8:linux/arm64/v8
-            artifact_name: centos8_rpi4
-            artifact_glob: packages/build/centos8/release/rpmbuild/RPMS/aarch64/ragent-*.rpm
+          - package: el8:linux/arm64/v8
+            artifact_name: el8_rpi4
+            artifact_glob: packages/build/el8/release/rpmbuild/RPMS/aarch64/ragent-*.rpm
             cloudsmith-distro: el
             cloudsmith-version: 8
             cloudsmith-format: rpm
