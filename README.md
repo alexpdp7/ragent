@@ -47,10 +47,10 @@ Packages are available at:
 
 https://cloudsmith.io/~ragent/repos/ragent/setup/
 
-Packages are tested on EL7, EL8 (x86 and aarch64), Debian 9, Debian 10, Raspbian 9, and Ubuntu 20.04.
+Packages are tested on EL7, EL8 (x86 and aarch64), Debian 10, Debian 11, and Ubuntu 20.04.
 
 # MAKING RELEASES
 
-Run cargo `release --skip-tag major|minor|patch` on a branch.
+Run `cargo release --no-tag major|minor|patch` on a branch.
 Merge the branch.
 Tag the version commit and push the tag.
