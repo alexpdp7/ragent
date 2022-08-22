@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 nix = "0.25.0"
-serde_json = "1.0.83"
+serde_json = "1.0.85"
 serde = "1.0.143"
 serde_derive = "1.0.143"
 hyper = { version = "0.14.20", features = ["server", "http1", "runtime"] }
