@@ -12,7 +12,8 @@ pub struct RagentInfo {
     pub filesystems: Vec<filesystems::Filesystem>,
     pub units: Vec<systemd::Unit>,
     pub reboot: reboot::Reboot,
-    pub entropy: usize,
+    pub entropy_available: usize,
+    pub entropy_pool_size: usize,
 }
 
 pub fn get_ragent_info() -> RagentInfo {
@@ -20,6 +21,7 @@ pub fn get_ragent_info() -> RagentInfo {
         filesystems: filesystems::get_filesystems(),
         units: systemd::get_units(),
         reboot: reboot::get_reboot(),
-        entropy: entropy::get_entropy(),
+        entropy_available: entropy::get_entropy_available(),
+        entropy_pool_size: entropy::get_entropy_pool_size(),
     }
 }
