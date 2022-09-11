@@ -37,7 +37,7 @@ will check the local host without using a daemon.
 * No SystemD unit is in failed state (critical, or use `--warning-units` to define units that will only generate warnings)
 * No reboot is required (EL7, EL8, Debian/Ubuntu)
   (Note that Rocky Linux 8 on Raspberry Pi seems to be affected by [this bug that requires manual intervention after reboots](https://bugs.rockylinux.org/show_bug.cgi?id=177))
-* Entropy is over 250 (critical) or 500 (warning) 
+* Entropy is over a quarter of the pool size (critical) or over half (warning) 
 
 # BUILDING PACKAGES
 
