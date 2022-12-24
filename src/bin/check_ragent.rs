@@ -1,4 +1,5 @@
 use clap::Parser;
+use nix::libc::c_ulong;
 use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUom};
 use ragent::systemd::Unit;
 use ragent::{get_ragent_info, RagentInfo};
@@ -37,7 +38,7 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
     let mut metrics: Vec<Box<dyn HasNagiosStatus>> = Vec::new();
     for filesystem in ragent_info.filesystems.iter() {
         if filesystem.size_bytes != 0 {
-            metrics.push(Box::new(NagiosMetric::<u64> {
+            metrics.push(Box::new(NagiosMetric::<c_ulong> {
                 label: format!("{}_available_bytes", filesystem.mount_point),
                 uom: NagiosUom::Bytes,
                 value: filesystem.available_bytes,
@@ -54,7 +55,7 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
             }));
         }
         if filesystem.inodes != 0 {
-            metrics.push(Box::new(NagiosMetric::<u64> {
+            metrics.push(Box::new(NagiosMetric::<c_ulong> {
                 label: format!("{}_available_inodes", filesystem.mount_point),
                 uom: NagiosUom::NoUnit,
                 value: filesystem.available_inodes,

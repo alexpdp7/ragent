@@ -1,3 +1,4 @@
+use nix::libc::c_ulong;
 use nix::sys::statvfs::statvfs;
 use std::fs;
 
@@ -11,10 +12,10 @@ pub fn get_filesystems() -> Vec<Filesystem> {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Filesystem {
     pub mount_point: String,
-    pub size_bytes: u64,
-    pub available_bytes: u64,
-    pub inodes: u64,
-    pub available_inodes: u64,
+    pub size_bytes: c_ulong,
+    pub available_bytes: c_ulong,
+    pub inodes: c_ulong,
+    pub available_inodes: c_ulong,
 }
 
 fn get_mount_points() -> Vec<String> {
