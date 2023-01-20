@@ -1,6 +1,6 @@
 [package]
 name = "ragent"
-version = "1.2.12"
+version = "1.2.13"
 authors = ["alex <alex@pdp7.net>"]
 description = "A Rust minimal monitoring agent"
 license = "Public Domain"
@@ -8,14 +8,14 @@ edition = "2021"
 publish = false
 
 [dependencies]
-nix = "0.26.1"
+nix = "0.26.2"
 serde_json = "1.0.91"
 serde = "1.0.152"
 serde_derive = "1.0.152"
 hyper = { version = "0.14.23", features = ["server", "http1", "runtime"] }
-tokio = { version = "1.23.0", features = ["macros", "rt-multi-thread"] }
-reqwest = { version = "0.11.13", features = ["blocking", "json"] }
-clap = { version = "4.0.32", features = ["derive"] }
+tokio = { version = "1.24.2", features = ["macros", "rt-multi-thread"] }
+reqwest = { version = "0.11.14", features = ["blocking", "json"] }
+clap = { version = "4.1.1", features = ["derive"] }
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
