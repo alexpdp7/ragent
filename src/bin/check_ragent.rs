@@ -21,7 +21,7 @@ fn main() {
     exit(match run() {
         Ok(status) => status,
         Err(s) => {
-            println!("RAGENT UNKNOWN: {}", s);
+            println!("RAGENT UNKNOWN: {s}");
             NagiosStatus::Unknown
         }
     } as i32);
@@ -31,7 +31,7 @@ fn get_from_agent(url: Url) -> Result<RagentInfo, Box<dyn Error>> {
     let response = reqwest::blocking::get(url)?;
     Ok(response
         .json::<RagentInfo>()
-        .map_err(|e| format!("Could not parse JSON: {}", e))?)
+        .map_err(|e| format!("Could not parse JSON: {e}"))?)
 }
 
 fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
@@ -120,7 +120,7 @@ fn make_nagios(
 
     let status = get_worst_status(&[metrics_status, unit_status, reboot_status]);
 
-    print!("RAGENT {}", status);
+    print!("RAGENT {status}");
 
     if !failed_warning_units.is_empty() {
         print!(
@@ -155,7 +155,7 @@ fn make_nagios(
     print!(" |");
 
     for metric in metrics.iter() {
-        print!(" {}", metric);
+        print!(" {metric}");
     }
 
     println!();
