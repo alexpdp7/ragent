@@ -10,7 +10,7 @@ pub enum NagiosStatus {
 
 impl fmt::Display for NagiosStatus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", format!("{:?}", self).to_uppercase())
+        write!(f, "{}", format!("{self:?}").to_uppercase())
     }
 }
 
