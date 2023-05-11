@@ -11,7 +11,7 @@ publish = false
 nix = "0.26.2"
 serde_json = "1.0.96"
 serde = "1.0.160"
-serde_derive = "1.0.160"
+serde_derive = "1.0.163"
 hyper = { version = "0.14.26", features = ["server", "http1", "runtime"] }
 tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
 reqwest = { version = "0.11.16", features = ["blocking", "json"] }
