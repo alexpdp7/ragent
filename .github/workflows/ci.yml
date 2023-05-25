@@ -58,8 +58,8 @@ jobs:
           - el7
           - el8
           - el8:linux/arm64/v8
-          - debian_stretch
-          - debian_stretch_rpi3
+          - debian_buster
+          - debian_buster_rpi3
         include:
           - package: el7
             artifact_name: el7
@@ -79,15 +79,15 @@ jobs:
             cloudsmith-distro: el
             cloudsmith-version: 8
             cloudsmith-format: rpm
-          - package: debian_stretch
-            artifact_name: debian_stretch
-            artifact_glob: packages/build/debian_stretch/debian/ragent_*.deb
+          - package: debian_buster
+            artifact_name: debian_buster
+            artifact_glob: packages/build/debian_buster/debian/ragent_*.deb
             cloudsmith-distro: any-distro
             cloudsmith-version: any-version
             cloudsmith-format: deb
-          - package: debian_stretch_rpi3
-            artifact_name: debian_stretch_rpi3
-            artifact_glob: packages/build/debian_stretch_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_*.deb
+          - package: debian_buster_rpi3
+            artifact_name: debian_buster_rpi3
+            artifact_glob: packages/build/debian_buster_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_*.deb
             cloudsmith-distro: any-distro
             cloudsmith-version: any-version
             cloudsmith-format: deb

@@ -8,8 +8,8 @@ $ for image in $(grep FROM */Dockerfile | cut -d " " -f 2) ; do docker pull $ima
 
 Or build all packages in parallel:
 
-$ parallel ./build_package -- el7 el8 debian_stretch debian_stretch_rpi3 el8:linux/arm64/v8
+$ parallel ./build_package -- el7 el8 debian_buster debian_buster_rpi3 el8:linux/arm64/v8
 
 NOTES:
 
-* The Debian Stretch package works on Buster and Ubuntu 20.04 with no issues
+* The Debian Buster package works on Ubuntu 20.04 with no issues
