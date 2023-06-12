@@ -15,7 +15,7 @@ serde_derive = "1.0.163"
 hyper = { version = "0.14.26", features = ["server", "http1", "runtime"] }
 tokio = { version = "1.28.1", features = ["macros", "rt-multi-thread"] }
 reqwest = { version = "0.11.18", features = ["blocking", "json"] }
-clap = { version = "4.3.0", features = ["derive"] }
+clap = { version = "4.3.3", features = ["derive"] }
 
 [package.metadata.rpm.cargo]
 buildflags = ["--release"]
