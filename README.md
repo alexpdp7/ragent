@@ -49,7 +49,7 @@ Packages are available at:
 
 https://cloudsmith.io/~ragent/repos/ragent/setup/
 
-Packages are tested on EL7, EL8 (x86 and aarch64), Debian 10, Debian 11, and Ubuntu 20.04.
+Packages are tested on EL8 (x86), EL9 (x86 and aarch64), and Debian 12.
 
 # MAKING RELEASES
 
