@@ -1,5 +1,5 @@
 use clap::Parser;
-use nix::libc::c_ulong;
+use nagios_range::{CheckType, NagiosRange};
 use ragent::nagios::{get_worst_status, HasNagiosStatus, NagiosMetric, NagiosStatus, NagiosUom};
 use ragent::systemd::Unit;
 use ragent::{get_ragent_info, RagentInfo};
@@ -38,41 +38,81 @@ fn get_metrics(ragent_info: &RagentInfo) -> Vec<Box<dyn HasNagiosStatus>> {
     let mut metrics: Vec<Box<dyn HasNagiosStatus>> = Vec::new();
     for filesystem in ragent_info.filesystems.iter() {
         if filesystem.size_bytes != 0 {
-            metrics.push(Box::new(NagiosMetric::<c_ulong> {
-                label: format!("{}_available_bytes", filesystem.mount_point),
+            metrics.push(Box::new(NagiosMetric {
+                label: format!("{}_used_bytes", filesystem.mount_point),
                 uom: NagiosUom::Bytes,
-                value: filesystem.available_bytes,
-                warn: Some(::std::cmp::min(
-                    filesystem.size_bytes / 5,
-                    2 * 1024 * 1024 * 1024,
-                )),
-                crit: Some(::std::cmp::min(
-                    filesystem.size_bytes / 10,
-                    1024 * 1024 * 1024,
-                )),
-                min: Some(0),
-                max: Some(filesystem.size_bytes),
+                value: (filesystem.size_bytes - filesystem.available_bytes) as f64,
+                warn: Some(
+                    NagiosRange::new(
+                        CheckType::Outside,
+                        0.0,
+                        (filesystem.size_bytes
+                            - ::std::cmp::min(filesystem.size_bytes / 5, 2 * 1024 * 1024 * 1024))
+                            as f64,
+                    )
+                    .unwrap(),
+                ),
+                crit: Some(
+                    NagiosRange::new(
+                        CheckType::Outside,
+                        0.0,
+                        (filesystem.size_bytes
+                            - ::std::cmp::min(filesystem.size_bytes / 10, 1024 * 1024 * 1024))
+                            as f64,
+                    )
+                    .unwrap(),
+                ),
+                min: Some(0.0),
+                max: Some(filesystem.size_bytes as f64),
             }));
         }
         if filesystem.inodes != 0 {
-            metrics.push(Box::new(NagiosMetric::<c_ulong> {
-                label: format!("{}_available_inodes", filesystem.mount_point),
+            metrics.push(Box::new(NagiosMetric {
+                label: format!("{}_used_inodes", filesystem.mount_point),
                 uom: NagiosUom::NoUnit,
-                value: filesystem.available_inodes,
-                warn: Some(filesystem.inodes / 5),
-                crit: Some(filesystem.inodes / 10),
-                min: Some(0),
-                max: Some(filesystem.inodes),
+                value: (filesystem.inodes - filesystem.available_inodes) as f64,
+                warn: Some(
+                    NagiosRange::new(
+                        CheckType::Outside,
+                        0.0,
+                        (filesystem.inodes - filesystem.available_inodes / 5) as f64,
+                    )
+                    .unwrap(),
+                ),
+                crit: Some(
+                    NagiosRange::new(
+                        CheckType::Outside,
+                        0.0,
+                        (filesystem.inodes - filesystem.available_inodes / 10) as f64,
+                    )
+                    .unwrap(),
+                ),
+                min: Some(0.0),
+                max: Some(filesystem.inodes as f64),
             }));
         }
     }
-    metrics.push(Box::new(NagiosMetric::<usize> {
+    metrics.push(Box::new(NagiosMetric {
         label: "entropy".to_string(),
         uom: NagiosUom::NoUnit,
-        value: ragent_info.entropy_available,
-        warn: Some(ragent_info.entropy_pool_size / 2),
-        crit: Some(ragent_info.entropy_pool_size / 4),
-        min: Some(0),
+        value: ragent_info.entropy_available as f64,
+        warn: Some(
+            NagiosRange::new(
+                CheckType::Inside,
+                0.0,
+                (ragent_info.entropy_pool_size / 2) as f64,
+            )
+            .unwrap(),
+        ),
+        crit: Some(
+            NagiosRange::new(
+                CheckType::Inside,
+                0.0,
+                (ragent_info.entropy_pool_size / 4) as f64,
+            )
+            .unwrap(),
+        ),
+        min: Some(0.0),
         max: None,
     }));
     metrics

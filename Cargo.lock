@@ -378,6 +378,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "nagios-range"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e739a5cd3516210c02494771db52a03c9c0a25e3bb4c17b3b2f785b0d01843c"
+
+[[package]]
 name = "nix"
 version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -456,6 +462,7 @@ version = "2.0.4"
 dependencies = [
  "clap",
  "hyper",
+ "nagios-range",
  "nix",
  "reqwest",
  "serde",
