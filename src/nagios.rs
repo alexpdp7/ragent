@@ -1,5 +1,7 @@
 use std::fmt;
 
+use nagios_range::NagiosRange;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum NagiosStatus {
     Ok,
@@ -19,14 +21,14 @@ pub fn get_worst_status(statuses: &[NagiosStatus]) -> NagiosStatus {
 }
 
 #[derive(Clone)]
-pub struct NagiosMetric<T: ::std::cmp::Ord + Clone> {
+pub struct NagiosMetric {
     pub label: String,
     pub uom: NagiosUom,
-    pub value: T,
-    pub warn: Option<T>,
-    pub crit: Option<T>,
-    pub min: Option<T>,
-    pub max: Option<T>,
+    pub value: f64,
+    pub warn: Option<NagiosRange>,
+    pub crit: Option<NagiosRange>,
+    pub min: Option<f64>,
+    pub max: Option<f64>,
 }
 
 fn or_empty<T: fmt::Display + Clone>(v: Option<T>) -> String {
@@ -41,18 +43,18 @@ pub trait HasNagiosStatus: ::std::fmt::Display {
     fn get_display_status(&self) -> String;
 }
 
-impl<T: ::std::cmp::Ord + Clone> HasNagiosStatus for NagiosMetric<T>
+impl HasNagiosStatus for NagiosMetric
 where
-    NagiosMetric<T>: ::std::fmt::Display,
+    NagiosMetric: ::std::fmt::Display,
 {
     fn get_status(&self) -> NagiosStatus {
         if let Some(crit) = &self.crit {
-            if self.value <= *crit {
+            if crit.check(self.value) {
                 return NagiosStatus::Critical;
             }
         }
         if let Some(warn) = &self.warn {
-            if self.value <= *warn {
+            if warn.check(self.value) {
                 return NagiosStatus::Warning;
             }
         }
@@ -64,10 +66,7 @@ where
     }
 }
 
-impl<T: fmt::Display + Clone> fmt::Display for NagiosMetric<T>
-where
-    T: std::cmp::Ord,
-{
+impl fmt::Display for NagiosMetric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
@@ -75,10 +74,10 @@ where
             self.label,
             self.value,
             self.uom,
-            or_empty(self.warn.clone()),
-            or_empty(self.crit.clone()),
-            or_empty(self.min.clone()),
-            or_empty(self.max.clone())
+            or_empty(self.warn),
+            or_empty(self.crit),
+            or_empty(self.min),
+            or_empty(self.max)
         )
     }
 }
