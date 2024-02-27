@@ -1,6 +1,6 @@
 [package]
 name = "ragent"
-version = "3.0.5"
+version = "3.0.6"
 authors = ["alex <alex@pdp7.net>"]
 description = "A Rust minimal monitoring agent"
 license = "Public Domain"
@@ -8,7 +8,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-nix = { version = "0.27.1", default-features = false, features = ["fs"] }
+nix = { version = "0.28.0", default-features = false, features = ["fs"] }
 serde_json = { version = "1.0.114", default-features = false }
 serde = { version = "1.0.197", default-features = false }
 serde_derive = { version = "1.0.167", default-features = false }
