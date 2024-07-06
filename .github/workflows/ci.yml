@@ -55,18 +55,11 @@ jobs:
     strategy:
       matrix:
         package:
-          - el7
           - el8
           - el8:linux/arm64/v8
           - debian_buster
           - debian_buster_rpi3
         include:
-          - package: el7
-            artifact_name: el7
-            artifact_glob: packages/build/el7/release/rpmbuild/RPMS/x86_64/ragent-*.rpm
-            cloudsmith-distro: el
-            cloudsmith-version: 7
-            cloudsmith-format: rpm
           - package: el8
             artifact_name: el8
             artifact_glob: packages/build/el8/release/rpmbuild/RPMS/x86_64/ragent-*.rpm

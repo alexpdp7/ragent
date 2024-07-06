@@ -13,10 +13,6 @@ Source0: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: systemd
 
-%if 0%{?el7}
-Requires:       yum-utils
-%endif
-
 %if 0%{?el8}
 Requires:       dnf-plugins-core
 %endif
