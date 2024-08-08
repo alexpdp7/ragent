@@ -504,7 +504,7 @@ dependencies = [
 
 [[package]]
 name = "ragent"
-version = "4.0.1"
+version = "4.0.2"
 dependencies = [
  "clap",
  "hyper 0.14.30",
