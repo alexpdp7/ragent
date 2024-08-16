@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 nix = { version = "0.29.0", default-features = false, features = ["fs"] }
-serde_json = { version = "1.0.122", default-features = false }
+serde_json = { version = "1.0.125", default-features = false }
 serde = { version = "1.0.205", default-features = false }
 serde_derive = { version = "1.0.167", default-features = false }
 hyper = { version = "0.14.28", features = ["server", "http1", "runtime"], default-features = false }
