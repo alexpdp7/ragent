@@ -91,7 +91,7 @@ jobs:
       - run: |
             echo artifact=$(ls ${{ matrix.artifact_glob }}) >> $GITHUB_ENV
             echo cargo_version=$(cargo read-manifest | jq .version -r) >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           path: ${{ env.artifact }}
