@@ -56,7 +56,7 @@ jobs:
       matrix:
         package:
           - el8
-          - el8:linux/arm64/v8
+          # - el8:linux/arm64/v8
           - debian_buster
           - debian_buster_rpi3
         include:
@@ -66,12 +66,12 @@ jobs:
             cloudsmith-distro: el
             cloudsmith-version: 8
             cloudsmith-format: rpm
-          - package: el8:linux/arm64/v8
-            artifact_name: el8_rpi4
-            artifact_glob: packages/build/el8/release/rpmbuild/RPMS/aarch64/ragent-*.rpm
-            cloudsmith-distro: el
-            cloudsmith-version: 8
-            cloudsmith-format: rpm
+          # - package: el8:linux/arm64/v8
+          #   artifact_name: el8_rpi4
+          #   artifact_glob: packages/build/el8/release/rpmbuild/RPMS/aarch64/ragent-*.rpm
+          #   cloudsmith-distro: el
+          #   cloudsmith-version: 8
+          #   cloudsmith-format: rpm
           - package: debian_buster
             artifact_name: debian_buster
             artifact_glob: packages/build/debian_buster/debian/ragent_*.deb
