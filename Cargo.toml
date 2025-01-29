@@ -1,6 +1,6 @@
 [package]
 name = "ragent"
-version = "5.0.7"
+version = "5.0.8"
 authors = ["alex <alex@pdp7.net>"]
 description = "A Rust minimal monitoring agent"
 license = "Public Domain"
