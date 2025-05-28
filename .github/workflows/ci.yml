@@ -86,7 +86,7 @@ jobs:
             cloudsmith-format: deb
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install -y qemu-user-static
+      - run: sudo apt update && sudo apt install -y qemu-user-static
       - run: cd packages/ ; ./build_package ${{ matrix.package }}
       - run: |
             echo artifact=$(ls ${{ matrix.artifact_glob }}) >> $GITHUB_ENV
