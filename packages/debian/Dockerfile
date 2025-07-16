@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM docker.io/library/debian:bullseye
 RUN apt update
 RUN apt install -y curl build-essential  libssl-dev pkg-config
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
