@@ -10,7 +10,7 @@ publish = false
 [dependencies]
 nix = { version = "0.30.1", default-features = false, features = [ "fs" ] }
 serde_json = { version = "1.0.143", default-features = false, features = [ "std" ] }
-serde = { version = "1.0.219", default-features = false }
+serde = { version = "1.0.223", default-features = false }
 serde_derive = { version = "1.0.219", default-features = false }
 hyper = { version = "1.7.0", default-features = false, features = [ "server" ] }
 tokio = { version = "1.47.1", default-features = false, features = [ "macros", "rt-multi-thread" ] }
