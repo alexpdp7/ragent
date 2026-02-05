@@ -494,7 +494,7 @@ dependencies = [
 
 [[package]]
 name = "ragent"
-version = "6.0.10"
+version = "6.0.11"
 dependencies = [
  "bytes",
  "clap",
