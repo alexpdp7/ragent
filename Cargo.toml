@@ -1,6 +1,6 @@
 [package]
 name = "ragent"
-version = "6.0.13"
+version = "6.0.14"
 authors = ["alex <alex@pdp7.net>"]
 description = "A Rust minimal monitoring agent"
 license = "Public Domain"
@@ -12,8 +12,8 @@ nix = { version = "0.31.2", default-features = false, features = [ "fs" ] }
 serde_json = { version = "1.0.149", default-features = false, features = [ "std" ] }
 serde = { version = "1.0.228", default-features = false }
 serde_derive = { version = "1.0.228", default-features = false }
-hyper = { version = "1.8.0", default-features = false, features = [ "server" ] }
-tokio = { version = "1.50.0", default-features = false, features = [ "macros", "rt-multi-thread" ] }
+hyper = { version = "1.9.0", default-features = false, features = [ "server" ] }
+tokio = { version = "1.52.0", default-features = false, features = [ "macros", "rt-multi-thread" ] }
 reqwest = { version = "0.13.2", default-features = false, features = [ "blocking", "json" ] }
 clap = { version = "4.6.0", default-features = false, features = [ "std", "derive" ] }
 nagios-range = { version = "0.2.5", default-features = false }
