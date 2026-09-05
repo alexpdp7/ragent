@@ -59,6 +59,7 @@ jobs:
           # - el8:linux/arm64/v8
           - debian
           - debian_rpi3
+          - debian_rpi4
         include:
           - package: el8
             artifact_name: el8
@@ -81,6 +82,12 @@ jobs:
           - package: debian_rpi3
             artifact_name: debian_rpi3
             artifact_glob: packages/build/debian_rpi3/armv7-unknown-linux-gnueabihf/debian/ragent_*.deb
+            cloudsmith-distro: any-distro
+            cloudsmith-version: any-version
+            cloudsmith-format: deb
+          - package: debian_rpi4
+            artifact_name: debian_rpi4
+            artifact_glob: packages/build/debian_rpi4/aarch64-unknown-linux-gnu/debian/ragent_*.deb
             cloudsmith-distro: any-distro
             cloudsmith-version: any-version
             cloudsmith-format: deb
