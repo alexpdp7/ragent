@@ -8,8 +8,4 @@ $ for image in $(grep FROM */Dockerfile | cut -d " " -f 2) ; do docker pull $ima
 
 Or build all packages in parallel:
 
-$ parallel ./build_package -- el8 debian debian_rpi3 el8:linux/arm64/v8
-
-NOTES:
-
-* The Debian Buster package works on Ubuntu 20.04 with no issues
+$ parallel ./build_package -- el8 debian debian_rpi3 debian_rpi4

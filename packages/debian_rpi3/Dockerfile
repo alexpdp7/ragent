@@ -1,4 +1,4 @@
-FROM docker.io/library/debian:bullseye
+FROM docker.io/library/debian:bookworm
 RUN dpkg --add-architecture armhf
 RUN apt update
 RUN apt install -y curl build-essential pkg-config libssl-dev:armhf gcc-arm-linux-gnueabihf
