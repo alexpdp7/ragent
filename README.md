@@ -48,7 +48,7 @@ Packages are available at:
 
 https://cloudsmith.io/~ragent/repos/ragent/setup/
 
-Packages are tested on EL9, EL10, and Debian 13 (x86).
+Packages are tested on EL9, EL10, and Debian 13 (x86 and aarch64).
 
 # MAKING RELEASES
 
