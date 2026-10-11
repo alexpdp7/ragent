@@ -15,6 +15,8 @@ struct Args {
     url: Option<Url>,
     #[clap(long)]
     warning_units: Vec<String>,
+    #[clap(long)]
+    ignored_units: Vec<String>,
 }
 
 fn main() {
@@ -122,6 +124,7 @@ fn make_nagios(
     metrics: &[Box<dyn HasNagiosStatus>],
     ragent_info: RagentInfo,
     warning_units: Vec<String>,
+    ignored_units: Vec<String>,
 ) -> NagiosStatus {
     let metrics_status = get_worst_status(
         &metrics
@@ -142,6 +145,7 @@ fn make_nagios(
         .iter()
         .filter(|u| u.active_state == "failed")
         .filter(|u| !warning_units.contains(&u.id))
+        .filter(|u| !ignored_units.contains(&u.id))
         .collect();
 
     let unit_status = if !failed_critical_units.is_empty() {
@@ -210,5 +214,10 @@ fn run() -> Result<NagiosStatus, Box<dyn Error>> {
         None => get_ragent_info(),
     };
     let metrics = get_metrics(&ragent_info);
-    Ok(make_nagios(&metrics, ragent_info, args.warning_units))
+    Ok(make_nagios(
+        &metrics,
+        ragent_info,
+        args.warning_units,
+        args.ignored_units,
+    ))
 }

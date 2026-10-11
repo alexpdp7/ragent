@@ -36,7 +36,7 @@ will check the local host without using a daemon.
 
 * No filesystem's free space is less than 2 GB or 20% free (warning) or less than 1 GB/10% (critical)
 * No filesystem's free inodes are less than 20% free (warning) or less than 10% free (critical)
-* No SystemD unit is in failed state (critical, or use `--warning-units` to define units that will only generate warnings)
+* No SystemD unit is in failed state (critical, use `--warning-units` to define units that will only generate warnings, use `--ignored-units` to ignore units)
 * No reboot is required (EL9, Debian/Ubuntu)
 * Entropy is over a quarter of the pool size (critical) or over half (warning)
 
